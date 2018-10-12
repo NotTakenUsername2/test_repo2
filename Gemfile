@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 group :test do
   gem 'json_pure', '<= 2.0.1' if RUBY_VERSION < '2.0.0'
@@ -38,4 +38,3 @@ end
 
 group :system_tests do
 end
-

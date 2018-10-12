@@ -16,7 +16,7 @@ exclude_paths = [
 ]
 
 JsonLint::RakeTask.new do |t|
-  t.paths = %w(**/*.json)
+  t.paths = %w[**/*.json]
 end
 
 MetadataJsonLint.options.strict_license = false
@@ -33,9 +33,9 @@ PuppetSyntax.exclude_paths = exclude_paths
 
 Rake::Task[:lint].clear
 
-namespace :validate do
+namespace validate: do
   desc 'Run all validation tests.'
-  task :all => [
+  task all: => [
     'jsonlint',
     'lint',
     'metadata_lint',
@@ -49,10 +49,10 @@ namespace :validate do
 end
 
 desc 'Create a new module release on a forge. A custom forge url can be passed using the parameter forge. Example rake release forge=<url>'
-task :release => 'validate:all' do
+task release: => 'validate:all' do
   ENV['BLACKSMITH_FORGE_USERNAME'] = ''
   ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
-  ENV['BLACKSMITH_FORGE_URL'] = ENV.has_key?('forge') ? ENV['forge'] : 'http://puppetforge'
+  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge'
 
   Rake::Task['module:clean'].invoke
   Rake::Task['module:tag'].invoke
