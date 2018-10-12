@@ -4,6 +4,7 @@ group :test do
   gem 'json_pure', '<= 2.0.1' if RUBY_VERSION < '2.0.0'
   gem 'jsonlint'
   gem 'metadata-json-lint'
+  gem 'openssl'
 
   gem 'puppet', '~> 4.0.0'
   gem 'puppet-lint'
@@ -27,7 +28,6 @@ group :test do
   gem 'semantic_puppet'
   gem 'simplecov'
   gem 'simplecov-console'
-  gem 'openssl'
 end
 
 group :development do
