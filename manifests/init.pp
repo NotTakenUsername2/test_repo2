@@ -45,5 +45,5 @@
 class ssh {
   #comment
   class { 'ssh::install': }
-  ->class { 'ssh::config': }
+  ->Class { 'ssh::config': }
 }
