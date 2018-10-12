@@ -9,10 +9,10 @@ require 'rubocop/rake_task'
 require 'semantic_puppet'
 
 exclude_paths = [
-  "bundle/**/*",
-  "pkg/**/*",
-  "vendor/**/*",
-  "spec/**/*",
+  'bundle/**/*',
+  'pkg/**/*',
+  'vendor/**/*',
+  'spec/**/*',
 ]
 
 JsonLint::RakeTask.new do |t|
@@ -34,7 +34,7 @@ PuppetSyntax.exclude_paths = exclude_paths
 Rake::Task[:lint].clear
 
 namespace :validate do
-  desc "Run all validation tests."
+  desc 'Run all validation tests.'
   task :all => [
     'jsonlint',
     'lint',
@@ -48,7 +48,7 @@ namespace :validate do
   ]
 end
 
-desc "Create a new module release on a forge. A custom forge url can be passed using the parameter forge. Example rake release forge=<url>"
+desc 'Create a new module release on a forge. A custom forge url can be passed using the parameter forge. Example rake release forge=<url>'
 task :release => 'validate:all' do
   ENV['BLACKSMITH_FORGE_USERNAME'] = ''
   ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
