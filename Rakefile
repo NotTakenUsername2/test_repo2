@@ -33,7 +33,7 @@ PuppetSyntax.exclude_paths = exclude_paths
 
 Rake::Task[:lint].clear
 
-namespace validate: do
+namespace :validate do
   desc 'Run all validation tests.'
   task all: => [
     'jsonlint',
@@ -58,4 +58,3 @@ task release: => 'validate:all' do
   Rake::Task['module:tag'].invoke
   Rake::Task['module:push'].invoke
 end
-
