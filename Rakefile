@@ -50,7 +50,7 @@ end
 
 desc "Create a new module release on a forge. A custom forge url can be passed using the parameter forge. Example rake release forge=<url>"
 task :release => 'validate:all' do
-  ENV['BLACKSMITH_FORGE_USERNAME'] = 'cmc'
+  ENV['BLACKSMITH_FORGE_USERNAME'] = ''
   ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
   ENV['BLACKSMITH_FORGE_URL'] = ENV.has_key?('forge') ? ENV['forge'] : 'http://puppetforge'
 
