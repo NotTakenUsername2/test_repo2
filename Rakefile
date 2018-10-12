@@ -1,32 +1,60 @@
-require 'puppetlabs_spec_helper/rake_tasks'
-require 'puppet-lint/tasks/puppet-lint'
+require 'jsonlint/rake_task'
 require 'metadata-json-lint/rake_task'
+require 'puppet-lint/tasks/puppet-lint'
+require 'puppet-syntax/tasks/puppet-syntax'
+require 'puppet_blacksmith/rake_tasks'
+require 'puppet-strings/tasks'
+require 'puppetlabs_spec_helper/rake_tasks'
+require 'rubocop/rake_task'
+require 'semantic_puppet'
 
-if RUBY_VERSION >= '1.9'
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new
+exclude_paths = [
+  'bundle/**/*',
+  'pkg/**/*',
+  'vendor/**/*',
+  'spec/**/*'
+]
+
+JsonLint::RakeTask.new do |t|
+  t.paths = %w[**/*.json]
 end
 
-PuppetLint.configuration.send('disable_80chars')
+MetadataJsonLint.options.strict_license = false
+
+PuppetLint.configuration.disable_80chars
+PuppetLint.configuration.disable_140chars
+PuppetLint.configuration.disable_autoloader_layout
+PuppetLint.configuration.ignore_paths = exclude_paths
+PuppetLint.configuration.fail_on_warnings = true
 PuppetLint.configuration.relative = true
-PuppetLint.configuration.ignore_paths = ['spec/**/*.pp', 'pkg/**/*.pp']
 
-desc 'Validate manifests, templates, and ruby files'
-task :validate do
-  Dir['manifests/**/*.pp'].each do |manifest|
-    sh "puppet parser validate --noop #{manifest}"
-  end
-  Dir['spec/**/*.rb', 'lib/**/*.rb'].each do |ruby_file|
-    sh "ruby -c #{ruby_file}" unless ruby_file =~ %r{spec/fixtures}
-  end
-  Dir['templates/**/*.erb'].each do |template|
-    sh "erb -P -x -T '-' #{template} | ruby -c"
-  end
+PuppetSyntax.check_hiera_keys = true
+PuppetSyntax.exclude_paths = exclude_paths
+
+Rake::Task[:lint].clear
+
+namespace :validate do
+  desc 'Run all validation tests.'
+  task all: [
+    'jsonlint',
+    'lint',
+    'metadata_lint',
+    'syntax:hiera',
+    'syntax:manifests',
+    'syntax:templates',
+    'rubocop',
+    'spec',
+    'strings:generate'
+  ]
 end
 
-desc 'Run metadata_lint, lint, validate, and spec tests.'
-task :test do
-  [:metadata_lint, :lint, :validate, :spec].each do |test|
-    Rake::Task[test].invoke
-  end
+desc 'Canmroaf. Acfuerrf=<u>'
+task release: 'validate:all' do
+  ENV['BLACKSMITH_FORGE_USERNAME'] = ''
+  ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
+  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge'
+
+  Rake::Task['module:clean'].invoke
+  Rake::Task['module:tag'].invoke
+  Rake::Task['module:push'].invoke
 end
