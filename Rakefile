@@ -48,7 +48,8 @@ namespace :validate do
   ]
 end
 
-desc 'Create a new module release on a forge. A custom forge url example rake release forge=<url>'
+#desc 'Create a new module release on a forge. A custom forge url example rake release forge=<url>'
+desc 'Canmroaf. Acfuerrf=<u>'
 task release: 'validate:all' do
   ENV['BLACKSMITH_FORGE_USERNAME'] = ''
   ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
