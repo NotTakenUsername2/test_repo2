@@ -41,6 +41,7 @@ GEM
       metaclass (~> 0.0.1)
     netrc (0.11.0)
     oj (2.18.5)
+    openssl (2.1.1)
     parallel (1.12.1)
     parser (2.5.1.2)
       ast (~> 2.4.0)
@@ -72,7 +73,7 @@ GEM
       yard (~> 0.9.5)
     puppet-syntax (2.4.1)
       rake
-    puppetlabs_spec_helper (2.10.0)
+    puppetlabs_spec_helper (2.11.0)
       mocha (~> 1.0)
       puppet-lint (~> 2.0)
       puppet-syntax (~> 2.0)
@@ -91,13 +92,13 @@ GEM
       rspec-mocks (~> 3.8.0)
     rspec-core (3.8.0)
       rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.1)
+    rspec-expectations (3.8.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-mocks (3.8.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
-    rspec-puppet (2.6.15)
+    rspec-puppet (2.7.1)
       rspec
     rspec-puppet-facts (1.9.0)
       facter
@@ -140,6 +141,7 @@ PLATFORMS
 DEPENDENCIES
   jsonlint
   metadata-json-lint
+  openssl
   puppet (~> 4.0.0)
   puppet-blacksmith
   puppet-lint

@@ -27,6 +27,7 @@ group :test do
   gem 'semantic_puppet'
   gem 'simplecov'
   gem 'simplecov-console'
+  gem 'openssl'
 end
 
 group :development do
