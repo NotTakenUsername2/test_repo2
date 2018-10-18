@@ -2,12 +2,12 @@
 #
 #
 require 'jsonlint/rake_task'
-require 'metadata-json-lint/rake_task' 
+require 'metadata-json-lint/rake_task'
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
 require 'puppet_blacksmith/rake_tasks'
 require 'puppet-strings/tasks'
-require 'puppetlabs_spec_helper/rake_tasks' 
+require 'puppetlabs_spec_helper/rake_tasks'
 require 'rubocop/rake_task'
 require 'semantic_puppet'
 require 'git'
@@ -20,7 +20,7 @@ exclude_paths = [
 ]
 
 JsonLint::RakeTask.new do |t|
-  t.paths = %w(**/*.json)
+  t.paths = %w[**/*.json]
 end
 
 MetadataJsonLint.options.strict_license = false
@@ -38,8 +38,8 @@ PuppetSyntax.exclude_paths = exclude_paths
 Rake::Task[:lint].clear
 
 namespace :validate do
-  desc 'Run all validation tests.'
-  task :all => [
+  desc 'Run all module validation tests.'
+  task all: [
     'jsonlint',
     'lint',
     'metadata_lint',
@@ -52,8 +52,8 @@ namespace :validate do
   ]
   end
 
-  desc 'Canmroaf. Acfuerrf=<u>'
-  task :release =>  'validate:all' do
+  desc 'Module propagatie to the forge'
+  task release: 'validate:all' do
     
     #
     # r over denken username te parameterizeren, meestal is username cmc, maar kan ook anders zijn, in dit geval test, misschien uit metadata.josn halen
