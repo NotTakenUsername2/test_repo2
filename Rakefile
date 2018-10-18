@@ -53,7 +53,8 @@ namespace :validate do
 end
 
 desc 'Module propagatie to the forge'
-task release: 'validate:all' do
+#task release: 'validate:all' do
+task release: do
   #
   # r over denken username te parameterizeren, meestal is username cmc, maar kan
   # ook anders zijn, in dit geval test, misschien uit metadata.josn halen
@@ -78,9 +79,9 @@ task release: 'validate:all' do
   #
   # current_module_tags = Rake::Task['module:version']
   # next_module_tag = Rake::Task['module:version:next']
-  Rake::Task['module:tag'].invoke
+  # Rake::Task['module:tag'].invoke
   ####### Module push && git push tags || tag rollback
-  Rake::Task['module:push'].invoke
+  # Rake::Task['module:push'].invoke
   ### begin
   ###   raise "Pushing to the forge failed"
   ### rescue
