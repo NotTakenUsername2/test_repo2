@@ -76,18 +76,17 @@ task release: 'validate:all' do
   # git tag -d <release>
   # git tag -l
   #
-  current_module_tags = Rake::Task['module:version']
-  next_module_tag= Rake::Task['module:version:next']
+  # current_module_tags = Rake::Task['module:version']
+  # next_module_tag = Rake::Task['module:version:next']
   Rake::Task['module:tag'].invoke
   ####### Module push && git push tags || tag rollback
   Rake::Task['module:push'].invoke
   ### begin
   ###   raise "Pushing to the forge failed"
   ### rescue
-    #git tag -d $next_module_tag
+  # git tag -d $next_module_tag
   ###   raise "deleted tag ${next_module_tag}"
   ### end
-
 end
 # Mijn insteek is gebruik maken van output van diverse tasks
 # Dit voelt onhandig omdat volgens mij die logica niet in
