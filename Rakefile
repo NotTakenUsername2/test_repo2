@@ -54,14 +54,14 @@ end
 
 desc 'Module propagatie to the forge'
 #task release: 'validate:all' do
-task release: do
+task :release do
   #
   # r over denken username te parameterizeren, meestal is username cmc, maar kan
   # ook anders zijn, in dit geval test, misschien uit metadata.josn halen
 
   ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
   ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
-  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge'
+  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge.local'
 
   #  Rake::Task['module:clean'].invoke
   #
