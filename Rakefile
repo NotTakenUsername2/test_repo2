@@ -91,7 +91,6 @@ task :release do
   ## To catch exeptions
   ## 1 RestClient::PreconditionFailed: 412 Precondition Failed ## Bestaat al?
   ## 2 RestClient::Exceptions::OpenTimeout: Timed out connecting to server
-
 end
 # Mijn insteek is gebruik maken van output van diverse tasks
 # Dit voelt onhandig omdat volgens mij die logica niet in
