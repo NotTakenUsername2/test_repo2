@@ -53,7 +53,6 @@ namespace :validate do
 end
 
 desc 'Module propagatie to the forge'
-#task release: 'validate:all' do
 task :release do
   #
   # r over denken username te parameterizeren, meestal is username cmc, maar kan
@@ -61,7 +60,8 @@ task :release do
 
   ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
   ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
-  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge.local'
+  #  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge.local'
+  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
 
   #  Rake::Task['module:clean'].invoke
   #
@@ -81,13 +81,17 @@ task :release do
   # next_module_tag = Rake::Task['module:version:next']
   # Rake::Task['module:tag'].invoke
   ####### Module push && git push tags || tag rollback
-  # Rake::Task['module:push'].invoke
+  Rake::Task['module:push'].invoke
   ### begin
   ###   raise "Pushing to the forge failed"
   ### rescue
   # git tag -d $next_module_tag
   ###   raise "deleted tag ${next_module_tag}"
   ### end
+  ## To catch exeptions
+  ## 1 RestClient::PreconditionFailed: 412 Precondition Failed ## Bestaat al?
+  ## 2 RestClient::Exceptions::OpenTimeout: Timed out connecting to server
+
 end
 # Mijn insteek is gebruik maken van output van diverse tasks
 # Dit voelt onhandig omdat volgens mij die logica niet in
