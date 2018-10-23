@@ -6,7 +6,6 @@ group :test do
   gem 'metadata-json-lint'
 
   gem 'openssl'
-
   gem 'puppet', '~> 5.0.0'
   gem 'puppet-lint'
   gem 'puppet-lint-absolute_classname-check'
@@ -32,10 +31,11 @@ group :test do
 end
 
 group :development do
-  gem 'puppet-blacksmith'
   gem 'git'
 
+  gem 'puppet-blacksmith'
   gem 'puppet-strings'
+
   gem 'redcarpet'
 end
 
