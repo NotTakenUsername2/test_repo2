@@ -1,10 +1,8 @@
 source 'https://rubygems.org'
 
 group :test do
-  gem 'git'
   gem 'json_pure', '<= 2.0.1' if RUBY_VERSION < '2.0.0'
   gem 'jsonlint'
-
   gem 'metadata-json-lint'
 
   gem 'openssl'
@@ -26,7 +24,7 @@ group :test do
   gem 'rspec'
   gem 'rspec-puppet'
   gem 'rspec-puppet-facts'
-  gem 'rubocop'
+  gem 'rubocop', '0.54.0'
 
   gem 'semantic_puppet'
   gem 'simplecov'
@@ -35,6 +33,7 @@ end
 
 group :development do
   gem 'puppet-blacksmith'
+  gem 'git'
 
   gem 'puppet-strings'
   gem 'redcarpet'

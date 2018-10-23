@@ -52,17 +52,76 @@ namespace :validate do
   ]
 end
 
-desc 'Module propagatie to the forge'
-task :release do
-  #
-  # r over denken username te parameterizeren, meestal is username cmc, maar kan
-  # ook anders zijn, in dit geval test, misschien uit metadata.josn halen
 
-  ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
-  ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
-  #  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge.local'
-  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
+namespace :release do
+#  desc 'Validate, Tag and propagate'
+#  task auto: [
+#    'validate:all',
+#    'cicd:tagging',
+#    'cicd:propagate'
+#  ] 
+#  end
+  desc 'Module propagatie to the forge'
+  task :propagate do
+    begin
+      ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
+      ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
+      #  ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://puppetforge.local'
+      ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
+      Rake::Task['module:push'].invoke
+    rescue StandardError => e
+      puts e.message
+      puts e.backtrace.inspect
+      raise('Module release upload mislukt')
+    end
+  end
+  desc 'Module tagging adhv metadata.json, local tag and push remote tag'
+  task :tagging => 'validate:all' do
+    begin
+      Rake::Task['module:tag'].invoke
+    rescue StandardError => e
+      puts e.message
+      puts e.backtrace.inspect
+      raise('Module release tagging mislukt')
+    end
+  end
+  task :togithub
+    begin
+      git = Git.open(File.dirname(__FILE__), :log => Logger.new(STDOUT))
+      git.push(git.remote, git.branch, tags: true)
+    rescue StandardError => e
+      puts e.message
+      puts e.backtrace.inspect
+      raise('Module release push mislukt')
+    end
 
+end
+    #git = Git.open(File.dirname(__FILE__), :log => Logger.new(STDOUT))
+    #current_module_tags = Rake::Task['module:tag'].invoke
+
+    #next_module_tag = Rake::Task['module:version:next']
+  ##current_module_version = Rake::Task['module:version']
+    # current_module_version = '0.1.0'  
+
+    # Tag my local and wipe when i miss
+# Push local and wipe when it goes wrong.
+    #begin
+   #   git.push('origin', ":refs/tags/#{current_module_version}", f: true)
+    #rescue
+    #  puts ("Git push failed")
+#      Rake::Task['cicd:tagging_rollback'].invoke
+#    else
+#      raise ("shit hits the tagging fan")
+  #  end
+
+
+#  desc 'Deleting local tag and push to origin remote'
+#  task :tagging_rollback do
+#    current_module_version = '0.1.0'
+#    puts "Online git tag #{current_module_version} could not be pushed"
+#    git.delete_tag("#{current_module_version}") if git.tags.include?("#{current_module_version}")
+#    git.push('origin', ":refs/tags/#{current_module_version}", f: true)
+#  end
   #  Rake::Task['module:clean'].invoke
   #
   # If module:tag == already exists error (versie in metadata.json is al
@@ -77,11 +136,15 @@ task :release do
   # git tag -d <release>
   # git tag -l
   #
-  # current_module_tags = Rake::Task['module:version']
-  # next_module_tag = Rake::Task['module:version:next']
+  # Blacksmith::RakeTask.new do |t|
+  # t.tag_pattern = "v%s" # Use a custom pattern with git tag. %s is replaced
+  # with the version number.
+  # t.build = false # do not build the module nor push it to the Forge, just
+  # do the tagging [:clean, :tag, :bump_commit]
+  # end
   # Rake::Task['module:tag'].invoke
   ####### Module push && git push tags || tag rollback
-  Rake::Task['module:push'].invoke
+  # #Rake::Task['module:push'].invoke
   ### begin
   ###   raise "Pushing to the forge failed"
   ### rescue
@@ -91,9 +154,4 @@ task :release do
   ## To catch exeptions
   ## 1 RestClient::PreconditionFailed: 412 Precondition Failed ## Bestaat al?
   ## 2 RestClient::Exceptions::OpenTimeout: Timed out connecting to server
-end
-# Mijn insteek is gebruik maken van output van diverse tasks
-# Dit voelt onhandig omdat volgens mij die logica niet in
-# de Rakefile moet komen.
-# Vraag is zelfs of het uberhaupt nodig is en of er niet al een Gem/method
-# voor is.
+#end
