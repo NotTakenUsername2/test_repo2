@@ -1,6 +1,3 @@
-# https://github.com/ruby/rake/blob/master/doc/rakefile.rdoc
-#
-#
 require 'jsonlint/rake_task'
 require 'metadata-json-lint/rake_task'
 require 'puppet-lint/tasks/puppet-lint'
@@ -11,6 +8,9 @@ require 'puppetlabs_spec_helper/rake_tasks'
 require 'rubocop/rake_task'
 require 'semantic_puppet'
 require 'git'
+
+GREEN="\033[32m".freeze
+RESET="\033[0m".freeze
 
 exclude_paths = [
   'bundle/**/*',
@@ -52,21 +52,21 @@ namespace :validate do
   ]
 end
 
-namespace :test do
-  desc 'all in 1'
-  task :all do
-    begin
-      ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
-      ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
-      ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
-
-      Rake::Task['module:tag'].invoke
-      git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
-      git.push(git.remote, git.branch, tags: true)
-      Rake::Task['module:push'].invoke
-    rescue StandardError => e
-      raise("Module release mislukt: #{e.message}")
-    end
+desc 'all in 1'
+task release: 'validate:all' do
+  begin
+    ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
+    ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
+    ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
+    Rake::Task['module:clean'].invoke
+    Rake::Task['module:tag'].invoke
+    git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
+    fail("The repository is not clean. Stopping release procedure.") unless
+     (git.status.changed.size + git.status.added.size + git.status.deleted.size + git.status.untracked.size).zero?
+    git.push(git.remote, git.branch, tags: true)
+    Rake::Task['module:push'].invoke
+  rescue StandardError => e
+    raise("Module release mislukt: #{e.message}")
   end
 end
 
@@ -86,10 +86,10 @@ namespace :release do
   desc 'Module tagging adhv metadata.json, local tag and push remote tag'
   task :tagging do
     begin
+      Rake::Task['module:clean'].invoke
       Rake::Task['module:tag'].invoke
       git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
       puts git.remote git.branch
-      #git.push(git.remote, git.branch, ":refs/tags/#{current_module_version}", f: true)
       git.push(git.remote, git.branch, tags: true)
     rescue StandardError => e
       raise("Module release tagging mislukt: #{e.message}")

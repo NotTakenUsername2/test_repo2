@@ -3,9 +3,11 @@ source 'https://rubygems.org'
 group :test do
   gem 'json_pure', '<= 2.0.1' if RUBY_VERSION < '2.0.0'
   gem 'jsonlint'
+
   gem 'metadata-json-lint'
 
   gem 'openssl'
+
   gem 'puppet', '~> 5.0.0'
   gem 'puppet-lint'
   gem 'puppet-lint-absolute_classname-check'
