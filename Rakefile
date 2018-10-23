@@ -59,10 +59,11 @@ namespace :test do
       ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
       ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
       ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
-      Rake::Task['module:push'].invoke
+
       Rake::Task['module:tag'].invoke
       git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
       git.push(git.remote, git.branch, tags: true)
+      Rake::Task['module:push'].invoke
     rescue StandardError => e
       raise("Module release mislukt: #{e.message}")
     end
@@ -83,7 +84,7 @@ namespace :release do
     end
   end
   desc 'Module tagging adhv metadata.json, local tag and push remote tag'
-  task tagging: do
+  task :tagging do
     begin
       Rake::Task['module:tag'].invoke
     rescue StandardError => e
