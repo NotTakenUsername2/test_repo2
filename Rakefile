@@ -61,8 +61,6 @@ task release: 'validate:all' do
     Rake::Task['module:clean'].invoke
     Rake::Task['module:tag'].invoke
     git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
-    fail("The repository is not clean. Stopping release procedure.") unless
-     (git.status.changed.size + git.status.added.size + git.status.deleted.size + git.status.untracked.size).zero?
     git.push(git.remote, git.branch, tags: true)
     Rake::Task['module:push'].invoke
   rescue StandardError => e
