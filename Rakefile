@@ -54,13 +54,6 @@ end
 
 
 namespace :release do
-#  desc 'Validate, Tag and propagate'
-#  task auto: [
-#    'validate:all',
-#    'cicd:tagging',
-#    'cicd:propagate'
-#  ] 
-#  end
   desc 'Module propagatie to the forge'
   task :propagate do
     begin
@@ -85,7 +78,7 @@ namespace :release do
       raise('Module release tagging mislukt')
     end
   end
-  task :togithub
+  task :togithub do
     begin
       git = Git.open(File.dirname(__FILE__), :log => Logger.new(STDOUT))
       git.push(git.remote, git.branch, tags: true)
@@ -94,7 +87,7 @@ namespace :release do
       puts e.backtrace.inspect
       raise('Module release push mislukt')
     end
-
+  end
 end
     #git = Git.open(File.dirname(__FILE__), :log => Logger.new(STDOUT))
     #current_module_tags = Rake::Task['module:tag'].invoke
@@ -154,4 +147,4 @@ end
   ## To catch exeptions
   ## 1 RestClient::PreconditionFailed: 412 Precondition Failed ## Bestaat al?
   ## 2 RestClient::Exceptions::OpenTimeout: Timed out connecting to server
-#end
+
