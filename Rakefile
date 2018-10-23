@@ -87,73 +87,12 @@ namespace :release do
   task :tagging do
     begin
       Rake::Task['module:tag'].invoke
+      git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
+      puts git.remote git.branch
+      #git.push(git.remote, git.branch, ":refs/tags/#{current_module_version}", f: true)
+      git.push(git.remote, git.branch, tags: true)
     rescue StandardError => e
       raise("Module release tagging mislukt: #{e.message}")
     end
   end
-  task :togithub do
-    begin
-      git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
-      git.push(git.remote, git.branch, tags: true)
-    rescue StandardError => e
-      raise("Module release push mislukt: #{e.message}")
-    end
-  end
 end
-# git = Git.open(File.dirname(__FILE__), :log => Logger.new(STDOUT))
-# current_module_tags = Rake::Task['module:tag'].invoke
-
-# next_module_tag = Rake::Task['module:version:next']
-# current_module_version = Rake::Task['module:version']
-# current_module_version = '0.1.0'
-
-# Tag my local and wipe when i miss
-# Push local and wipe when it goes wrong.
-# begin
-#   git.push('origin', ":refs/tags/#{current_module_version}", f: true)
-# rescue
-#  puts ("Git push failed")
-#      Rake::Task['cicd:tagging_rollback'].invoke
-#    else
-#      raise ("shit hits the tagging fan")
-#  end
-#  desc 'Deleting local tag and push to origin remote'
-#  task :tagging_rollback do
-# current_module_version = '0.1.0'
-# puts "Online git tag #{current_module_version} could not be pushed"
-# git.delete_tag("#{current_module_version}")
-# if git.tags.include?("#{current_module_version}")
-# git.push('origin', ":refs/tags/#{current_module_version}", f: true)
-#  end
-#  Rake::Task['module:clean'].invoke
-#
-# If module:tag == already exists error (versie in metadata.json is al
-# aangemaakt met git tag)
-# if module:push failes, delete git tag van de gepushed module zodat bij een
-# retry dit niet faalt
-# push de tag lokaal naar origin/remote voor de push naar forge, als dit faalt
-# faal de job
-# wanneer push naar git goed gaat en push naar forge fout, rollback tag op git
-# lokaal/remote.
-#
-# git tag -d <release>
-# git tag -l
-#
-# Blacksmith::RakeTask.new do |t|
-# t.tag_pattern = "v%s" # Use a custom pattern with git tag. %s is replaced
-# with the version number.
-# t.build = false # do not build the module nor push it to the Forge, just
-# do the tagging [:clean, :tag, :bump_commit]
-# end
-# Rake::Task['module:tag'].invoke
-####### Module push && git push tags || tag rollback
-# #Rake::Task['module:push'].invoke
-### begin
-###   raise "Pushing to the forge failed"
-### rescue
-# git tag -d $next_module_tag
-###   raise "deleted tag ${next_module_tag}"
-### end
-## To catch exeptions
-## 1 RestClient::PreconditionFailed: 412 Precondition Failed ## Bestaat al?
-## 2 RestClient::Exceptions::OpenTimeout: Timed out connecting to server
