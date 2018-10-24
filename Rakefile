@@ -11,6 +11,7 @@ require 'git'
 
 GREEN="\033[32m".freeze
 RESET="\033[0m".freeze
+TAG_PATTERN="v%s"
 
 exclude_paths = [
   'bundle/**/*',
@@ -21,6 +22,10 @@ exclude_paths = [
 
 JsonLint::RakeTask.new do |t|
   t.paths = %w[**/*.json]
+end
+
+Blacksmith::RakeTask.new do |t|
+  t.tag_pattern = TAG_PATTERN # Use a custom pattern with git tag. %s is replaced with the version number.
 end
 
 MetadataJsonLint.options.strict_license = false
@@ -84,11 +89,20 @@ namespace :release do
   desc 'Module tagging adhv metadata.json, local tag and push remote tag'
   task :tagging do
     begin
-      Rake::Task['module:clean'].invoke
-      Rake::Task['module:tag'].invoke
-      git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
-      puts git.remote git.branch
-      git.push(git.remote, git.branch, tags: true)
+      # Rake::Task['module:clean'].invoke
+      # Rake::Task['module:tag'].invoke      
+      # git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
+      
+      version = TAG_PATTERN % [Blacksmith::Modulefile.new.version]
+      
+      puts "#{version}"
+      # git.tags.each do |tag|
+      #  puts tag.name
+      # end
+      # tag= git.tags.reverse[0].name
+      # puts tag
+      #git.push(git.remote, git.branch, tags: true)
+      # git.push(git.remote, "refs/tags/#{version}")
     rescue StandardError => e
       raise("Module release tagging mislukt: #{e.message}")
     end
