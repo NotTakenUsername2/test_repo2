@@ -11,7 +11,7 @@ require 'git'
 
 GREEN="\033[32m".freeze
 RESET="\033[0m".freeze
-TAG_PATTERN="v%s"
+TAG_PATTERN="v%s".freeze
 
 exclude_paths = [
   'bundle/**/*',
