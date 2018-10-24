@@ -66,7 +66,10 @@ task release: 'validate:all' do
     Rake::Task['module:clean'].invoke
     Rake::Task['module:tag'].invoke
     git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
-    git.push(git.remote, git.branch, tags: true)
+      
+    version = TAG_PATTERN % [Blacksmith::Modulefile.new.version]
+    
+    git.push(git.remote, "refs/tags/#{version}")
     Rake::Task['module:push'].invoke
   rescue StandardError => e
     raise("Module release mislukt: #{e.message}")
