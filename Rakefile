@@ -89,20 +89,13 @@ namespace :release do
   desc 'Module tagging adhv metadata.json, local tag and push remote tag'
   task :tagging do
     begin
-      # Rake::Task['module:clean'].invoke
-      # Rake::Task['module:tag'].invoke      
-      # git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
+      Rake::Task['module:clean'].invoke
+      Rake::Task['module:tag'].invoke
+      git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
       
       version = TAG_PATTERN % [Blacksmith::Modulefile.new.version]
       
-      puts "#{version}"
-      # git.tags.each do |tag|
-      #  puts tag.name
-      # end
-      # tag= git.tags.reverse[0].name
-      # puts tag
-      #git.push(git.remote, git.branch, tags: true)
-      # git.push(git.remote, "refs/tags/#{version}")
+      git.push(git.remote, "refs/tags/#{version}")
     rescue StandardError => e
       raise("Module release tagging mislukt: #{e.message}")
     end
