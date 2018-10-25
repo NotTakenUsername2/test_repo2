@@ -68,22 +68,6 @@ task release: [
   'release:propagate'
 ]
 
-desc 'all in 1'
-task release: 'validate:all' do
-  begin
-    Rake::Task['module:clean'].invoke
-    Rake::Task['module:tag'].invoke
-    git = Git.open(File.dirname(__FILE__), log: Logger.new(STDOUT))
-      
-    version = TAG_PATTERN % [Blacksmith::Modulefile.new.version]
-    
-    git.push(git.remote, "refs/tags/#{version}")
-    Rake::Task['module:push'].invoke
-  rescue StandardError => e
-    raise("Module release mislukt: #{e.message}")
-  end
-end
-
 namespace :release do
   desc 'Module propagatie to the forge'
   task :propagate do
