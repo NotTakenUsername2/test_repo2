@@ -57,10 +57,6 @@ namespace :validate do
   ]
 end
 
-ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
-ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
-ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
-
 desc 'all in 1'
 task release: [
   'validate:all',
@@ -72,6 +68,9 @@ namespace :release do
   desc 'Module propagatie to the forge'
   task :propagate do
     begin
+      ENV['BLACKSMITH_FORGE_USERNAME'] = 'test'
+      ENV['BLACKSMITH_FORGE_PASSWORD'] = ''
+      ENV['BLACKSMITH_FORGE_URL'] = ENV.key?('forge') ? ENV['forge'] : 'http://192.168.121.244:8080'
       Rake::Task['module:push'].invoke
     rescue StandardError => e
       raise("Module release upload mislukt: #{e.message}")
